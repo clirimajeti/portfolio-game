@@ -134,9 +134,16 @@ export function useKeyboardControls(
 
   let collisionCheckCounter = 0
   const checkCardCollisions = () => {
-    // Only check collisions every 3rd frame to reduce performance impact
+    // Reduce collision detection frequency further to prevent frame drops
     collisionCheckCounter++
-    if (collisionCheckCounter % 3 !== 0) return
+    
+    // Check for project cards (section 4) less frequently
+    const projectCards = document.querySelectorAll('.game-project-card')
+    const isInProjectsSection = projectCards.length > 0
+    
+    // Only check collisions every 5th frame for projects section, 3rd frame for others
+    const frameSkip = isInProjectsSection ? 5 : 3
+    if (collisionCheckCounter % frameSkip !== 0) return
     
     // Find all interactive cards and elements on the page
     const cards = document.querySelectorAll('.stat-card, .skill-category, .game-project-card, .game-instructions, .about-text')
@@ -172,10 +179,11 @@ export function useKeyboardControls(
         // Add to collided set to prevent spam
         collidedCards.value.add(cardElement)
         
-        // Remove from set after a delay to allow re-collision
+        // Longer delay for project cards to reduce frequency
+        const collisionTimeout = isInProjectsSection ? 1000 : 800
         setTimeout(() => {
           collidedCards.value.delete(cardElement)
-        }, 800)
+        }, collisionTimeout)
       }
     })
   }

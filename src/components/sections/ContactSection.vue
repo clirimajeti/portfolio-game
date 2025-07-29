@@ -10,26 +10,26 @@
         <ContactMethod 
           icon="fas fa-envelope"
           label="Email"
-          value="alex@example.com"
-          href="mailto:alex@example.com"
+          value="clirimajeti@gmail.com"
+          href="mailto:clirimajeti@gmail.com"
         />
         <ContactMethod 
           icon="fab fa-linkedin"
           label="LinkedIn"
-          value="linkedin.com/in/alexdev"
-          href="https://linkedin.com/in/alexdev"
+          value="linkedin.com/in/clirim-ajeti"
+          href="https://www.linkedin.com/in/clirim-ajeti/"
         />
         <ContactMethod 
           icon="fab fa-github"
           label="GitHub"
-          value="github.com/alexdev"
-          href="https://github.com/alexdev"
+          value="github.com/clirimajeti"
+          href="https://github.com/clirimajeti"
         />
         <ContactMethod 
           icon="fab fa-twitter"
           label="Twitter"
-          value="@alexdev"
-          href="https://twitter.com/alexdev"
+          value="@clirimajeti"
+          href="https://twitter.com/clirimajeti"
         />
       </div>
       <div class="game-complete">

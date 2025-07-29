@@ -3,6 +3,9 @@ export const GAME_CONFIG = {
   CHARACTER_SPEED: 20, // Increased from 10 to 20 for much faster movement
   CHARACTER_SIZE: 70, // Increased from 50 to 70
   BUG_SIZE: 45, // New config for bug size (increased from 30)
+  // Collision detection sizes (20% larger to prevent tunneling)
+  COFFEE_COLLISION_SIZE: 24, // Visual size: 20px, Collision size: 24px
+  BUG_COLLISION_SIZE: 54, // Visual size: 45px, Collision size: 54px
   MAX_BUGS_LEVEL_1: 2, // 2 bugs in first section
   MAX_BUGS_LEVEL_2: 3, // 3 bugs in second section
   MAX_BUGS_LEVEL_3: 4, // 4 bugs in third section
@@ -12,13 +15,13 @@ export const GAME_CONFIG = {
 } as const
 
 export const PORTFOLIO_DATA = {
-  name: 'Alex Dev',
+  name: 'Clirim Ajeti',
   title: 'Full-Stack Developer & Game Creator',
-  email: 'alex@example.com',
+  email: 'clirimajeti@gmail.com',
   social: {
-    linkedin: 'https://linkedin.com/in/alexdev',
-    github: 'https://github.com/alexdev',
-    twitter: 'https://twitter.com/alexdev',
+    linkedin: 'https://www.linkedin.com/in/clirim-ajeti/',
+    github: 'https://github.com/clirimajeti',
+    twitter: 'https://twitter.com/clirimajeti',
   },
 } as const
 

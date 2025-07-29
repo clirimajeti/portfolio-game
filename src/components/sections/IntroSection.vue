@@ -2,7 +2,7 @@
   <section class="game-section intro-section">
     <Particles />
     <div class="intro-content">
-      <h1 class="intro-title">Alex Dev</h1>
+      <h1 class="intro-title">Clirim Ajeti</h1>
       <p class="intro-subtitle">Full-Stack Developer & Game Creator</p>
       <div class="game-instructions" :class="{ 'hero-hover': isHeroHovering }" ref="instructionsElement">
         <p>Welcome to my interactive portfolio!</p>

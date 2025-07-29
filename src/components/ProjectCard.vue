@@ -73,12 +73,17 @@ defineProps<{
 const isHeroHovering = ref(false)
 const cardElement = ref<HTMLElement>()
 
-// Function to trigger hero hover effect
+// Function to trigger hero hover effect with throttling
+let hoverTimeout: number | null = null
 const triggerHeroHover = () => {
+  // Prevent rapid successive hovers that could affect game performance
+  if (hoverTimeout) return
+  
   isHeroHovering.value = true
-  setTimeout(() => {
+  hoverTimeout = window.setTimeout(() => {
     isHeroHovering.value = false
-  }, 300)
+    hoverTimeout = null
+  }, 250)
 }
 
 // Function to get tech-specific styling
