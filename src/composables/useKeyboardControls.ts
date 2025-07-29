@@ -132,12 +132,21 @@ export function useKeyboardControls(
     }
   }
 
+  let collisionCheckCounter = 0
   const checkCardCollisions = () => {
+    // Only check collisions every 3rd frame to reduce performance impact
+    collisionCheckCounter++
+    if (collisionCheckCounter % 3 !== 0) return
+    
     // Find all interactive cards and elements on the page
-    const cards = document.querySelectorAll('.stat-card, .skill-category, .project-card, .game-instructions, .about-text')
+    const cards = document.querySelectorAll('.stat-card, .skill-category, .game-project-card, .game-instructions, .about-text')
     
     cards.forEach((card) => {
       const cardElement = card as HTMLElement
+      
+      // Skip if already processing this card
+      if (collidedCards.value.has(cardElement)) return
+      
       const cardRect = cardElement.getBoundingClientRect()
       
       // Get character bounds
@@ -157,21 +166,16 @@ export function useKeyboardControls(
       )
       
       if (isColliding) {
-        // Only trigger effect if we haven't collided with this card recently
-        if (!collidedCards.value.has(cardElement)) {
-          console.log('Hero collision with card detected!')
-          
-          // Trigger hover effect
-          cardElement.dispatchEvent(new CustomEvent('hero-collision'))
-          
-          // Add to collided set to prevent spam
-          collidedCards.value.add(cardElement)
-          
-          // Remove from set after a short delay to allow re-collision
-          setTimeout(() => {
-            collidedCards.value.delete(cardElement)
-          }, 500)
-        }
+        // Trigger hover effect
+        cardElement.dispatchEvent(new CustomEvent('hero-collision'))
+        
+        // Add to collided set to prevent spam
+        collidedCards.value.add(cardElement)
+        
+        // Remove from set after a delay to allow re-collision
+        setTimeout(() => {
+          collidedCards.value.delete(cardElement)
+        }, 800)
       }
     })
   }

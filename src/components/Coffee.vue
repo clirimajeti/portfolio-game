@@ -1,12 +1,12 @@
 <template>
-  <div 
+  <div
     v-for="coffee in coffeeProjectiles"
     :key="coffee.id"
     class="coffee-projectile"
-    :style="{ 
-      left: `${coffee.position.x}px`, 
+    :style="{
+      left: `${coffee.position.x}px`,
       top: `${coffee.position.y}px`,
-      transform: `rotate(${coffee.rotation}deg)`
+      transform: `rotate(${coffee.rotation}deg)`,
     }"
   />
 </template>
@@ -17,7 +17,6 @@ import { useGameStore } from '../stores/gameStore'
 
 const gameStore = useGameStore()
 const coffeeProjectiles = computed(() => gameStore.coffeeProjectiles)
-
 </script>
 
 <style scoped>
@@ -31,7 +30,6 @@ const coffeeProjectiles = computed(() => gameStore.coffeeProjectiles)
   background-position: center;
   z-index: 999;
   transition: transform 0.1s ease;
-  border: 2px solid red;
   border-radius: 50%;
 }
 </style>

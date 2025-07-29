@@ -20,7 +20,7 @@
     
     
     <!-- Game UI -->
-    <GameUI :level="currentLevel" :score="score" />
+    <GameUI :level="currentLevel" :score="score" @cheat-activated="handleCheatCode" />
     
     <!-- Portfolio sections -->
     <div class="scroll-container" :style="{ transform: `translateX(-${currentSection * 100}vw)` }">
@@ -105,6 +105,12 @@ const { position: characterPosition, currentLeg, facingDirection } = useKeyboard
 
 // Provide portal state to child components
 provide('isPortalActive', isPortalActive)
+
+// Cheat code handler
+const handleCheatCode = () => {
+  console.log('Cheat code activated! Skipping to next section...')
+  nextSection()
+}
 
 let gameLoopInterval: number
 

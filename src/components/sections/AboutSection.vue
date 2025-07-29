@@ -5,7 +5,11 @@
       <h2 class="about-title">// About Me</h2>
       <div class="about-grid">
         <div class="about-text" :class="{ 'hero-hover': isHeroHovering }" ref="aboutElement">
-          <p>I'm a passionate developer who loves creating interactive experiences and building robust applications. With expertise in both frontend and backend technologies, I enjoy tackling complex challenges and turning ideas into reality.</p>
+          <p>
+            I'm a passionate developer who loves creating interactive experiences and building
+            robust applications. With expertise in both frontend and backend technologies, I enjoy
+            tackling complex challenges and turning ideas into reality.
+          </p>
         </div>
         <div class="stats-grid">
           <StatCard number="50+" label="Projects Completed" />
@@ -83,14 +87,17 @@ onMounted(() => {
 }
 
 .about-text {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   line-height: 1.8;
   color: var(--text-light);
   background: rgba(0, 0, 0, 0.7);
   padding: 2rem;
   border-radius: 10px;
   border: 2px solid var(--accent-color);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  margin: 15px;
 }
 
 .about-text:hover,
@@ -123,9 +130,18 @@ onMounted(() => {
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-  100% { opacity: 0.6; transform: scale(1); }
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
 }
 
 @media (max-width: 768px) {
@@ -133,7 +149,7 @@ onMounted(() => {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr 1fr;
   }

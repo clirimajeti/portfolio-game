@@ -279,8 +279,13 @@ export function useGameMechanics(currentLevel?: Ref<number>) {
   }
 
   const getMaxBugsForLevel = (level: number) => {
-    if (level === 1) return GAME_CONFIG.MAX_BUGS_LEVEL_1 // 3 bugs for level 1
-    return Math.min(5 + (level - 1), 10) // Gradually increase for other levels, max 10
+    switch (level) {
+      case 1: return GAME_CONFIG.MAX_BUGS_LEVEL_1 // 2 bugs for section 1
+      case 2: return GAME_CONFIG.MAX_BUGS_LEVEL_2 // 3 bugs for section 2  
+      case 3: return GAME_CONFIG.MAX_BUGS_LEVEL_3 // 4 bugs for section 3
+      case 4: return GAME_CONFIG.MAX_BUGS_LEVEL_4 // 5 bugs for section 4
+      default: return 5 // Default for any additional levels
+    }
   }
 
   // Reset bug count when level changes
