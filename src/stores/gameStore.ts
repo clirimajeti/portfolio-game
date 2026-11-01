@@ -11,6 +11,7 @@ export const useGameStore = defineStore('game', () => {
   const isThrowingCoffee = ref(false)
   const totalBugsSpawned = ref(0)
   const isPortalActive = ref(false)
+  const rapidFire = ref(false)
   
   // ID counters
   let nextCoffeeId = 1
@@ -63,10 +64,12 @@ export const useGameStore = defineStore('game', () => {
   }
 
   const addCoffeeSplash = (splash: Omit<CoffeeSplash, 'id'>) => {
+    const id = nextSplashId++
     coffeeSplashes.value.push({
       ...splash,
-      id: nextSplashId++
+      id
     })
+    return id
   }
 
   const removeCoffeeSplash = (id: number) => {
@@ -82,6 +85,10 @@ export const useGameStore = defineStore('game', () => {
 
   const setThrowingCoffee = (throwing: boolean) => {
     isThrowingCoffee.value = throwing
+  }
+
+  const setRapidFire = (on: boolean) => {
+    rapidFire.value = on
   }
 
   const setPortalActive = (active: boolean) => {
@@ -131,6 +138,7 @@ export const useGameStore = defineStore('game', () => {
     isThrowingCoffee,
     totalBugsSpawned,
     isPortalActive,
+    rapidFire,
     
     // Actions
     addCoffeeProjectile,
@@ -144,6 +152,7 @@ export const useGameStore = defineStore('game', () => {
     addScore,
     setThrowingCoffee,
     setPortalActive,
+    setRapidFire,
     resetLevel,
     clearAllProjectiles,
     clearAllBugs,

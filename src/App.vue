@@ -20,7 +20,7 @@
     
     
     <!-- Game UI -->
-    <GameUI :level="currentLevel" :score="score" @cheat-activated="handleCheatCode" />
+    <GameUI :level="currentLevel" :score="score" @go-to-level="(level) => goToSection(level - 1)" />
     
     <!-- Portfolio sections -->
     <div class="scroll-container" :style="{ transform: `translateX(-${currentSection * 100}vw)` }">
@@ -50,7 +50,7 @@ import { useKeyboardControls } from './composables/useKeyboardControls'
 import { useGameNavigation } from './composables/useGameNavigation'
 import { useGameMechanics } from './composables/useGameMechanics'
 
-const { currentSection, currentLevel, nextSection } = useGameNavigation()
+const { currentSection, currentLevel, nextSection, goToSection } = useGameNavigation()
 
 // Use Pinia store for state management
 const gameStore = useGameStore()
@@ -105,12 +105,6 @@ const { position: characterPosition, currentLeg, facingDirection } = useKeyboard
 
 // Provide portal state to child components
 provide('isPortalActive', isPortalActive)
-
-// Cheat code handler
-const handleCheatCode = () => {
-  console.log('Cheat code activated! Skipping to next section...')
-  nextSection()
-}
 
 let gameLoopInterval: number
 

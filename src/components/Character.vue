@@ -46,7 +46,7 @@ watchEffect(() => {
   width: 70px;
   height: 70px;
   z-index: 1000;
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

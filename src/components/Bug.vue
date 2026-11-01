@@ -37,7 +37,6 @@ const bugEnemies = computed(() => gameStore.bugEnemies)
   background-position: center;
   z-index: 998;
   animation: bugCrawl 2s linear infinite;
-  transition: all 0.3s ease;
   
   /* Red glow effect radiating from center */
   filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.8))

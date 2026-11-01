@@ -1,21 +1,15 @@
 <template>
-  <div class="game-project-card" :class="{ 'hero-hover': isHeroHovering }" ref="cardElement">
-    <!-- Game Screenshot/Banner -->
+  <div
+    class="game-project-card"
+    :class="{ 'hero-hover': isHeroHovering }"
+    :data-status="project.status || 'Completed'"
+    ref="cardElement"
+  >
     <div class="game-banner">
-      <!-- Status Badge -->
-      <div
-        class="status-badge"
-        :class="`status-${project.status?.toLowerCase().replace(' ', '-')}`"
-      >
-        {{ project.status || 'Mission Complete' }}
+      <div class="status-badge">
+        {{ project.status || 'Completed' }}
       </div>
 
-      <!-- Difficulty Badge -->
-      <div class="difficulty-badge" :class="getDifficultyClass(project.difficulty)">
-        {{ project.difficulty || 'Intermediate Level' }}
-      </div>
-
-      <!-- Quest Type Badge -->
       <div class="quest-type-badge">
         {{ project.questType || 'Main Quest' }}
       </div>
@@ -25,24 +19,22 @@
     <div class="game-info">
       <div class="game-header">
         <h3 class="game-title">{{ project.title }}</h3>
-        <div class="game-genre">{{ project.category || 'Indie Game' }}</div>
+        <div class="game-genre">{{ project.category || 'Project' }}</div>
       </div>
 
       <p class="game-description">{{ project.description }}</p>
 
       <!-- Tech Stack -->
       <div class="tech-stack">
-        <div class="tech-label">⚡ Power-ups Used:</div>
+        <div class="tech-label">Tech stack</div>
         <div class="tech-tags">
-          <span
-            v-for="tech in project.tech"
-            :key="tech"
-            class="tech-tag"
-            :class="getTechClass(tech)"
-          >
-            {{ tech }}
-          </span>
+          <span v-for="tech in project.tech" :key="tech" class="tech-tag">{{ tech }}</span>
         </div>
+      </div>
+
+      <div v-if="project.github || project.demo" class="project-links">
+        <a v-if="project.github" :href="project.github" target="_blank" rel="noopener">GitHub</a>
+        <a v-if="project.demo" :href="project.demo" target="_blank" rel="noopener">Live site</a>
       </div>
     </div>
   </div>
@@ -56,13 +48,12 @@ interface Project {
   title: string
   description: string
   tech: string[]
-  image: string
+  image?: string
   github?: string
   demo?: string
   category?: string
   status?: string
   achievements?: string[]
-  difficulty?: string
   questType?: string
 }
 
@@ -86,49 +77,6 @@ const triggerHeroHover = () => {
   }, 250)
 }
 
-// Function to get tech-specific styling
-const getTechClass = (tech: string) => {
-  const techMap: Record<string, string> = {
-    Unity: 'tech-unity',
-    'Unreal Engine': 'tech-unreal',
-    Godot: 'tech-godot',
-    'Vue.js': 'tech-vue',
-    React: 'tech-react',
-    TypeScript: 'tech-typescript',
-    'C#': 'tech-csharp',
-    'C++': 'tech-cpp',
-    GDScript: 'tech-gdscript',
-    'Three.js': 'tech-threejs',
-    WebSocket: 'tech-websocket',
-    Firebase: 'tech-firebase',
-    MySQL: 'tech-mysql',
-    PostgreSQL: 'tech-postgresql',
-    MongoDB: 'tech-mongodb',
-    Express: 'tech-express',
-    'Node.js': 'tech-nodejs',
-    'Socket.io': 'tech-socketio',
-    'Stripe API': 'tech-stripe',
-    'OpenWeather API': 'tech-openweather',
-    Mapbox: 'tech-mapbox',
-    'CSS Animations': 'tech-css',
-    Pinia: 'tech-pinia',
-    Redis: 'tech-redis',
-  }
-  return techMap[tech] || 'tech-default'
-}
-
-// Function to get difficulty-specific styling
-const getDifficultyClass = (difficulty?: string) => {
-  const difficultyMap: Record<string, string> = {
-    'Beginner Level': 'difficulty-beginner',
-    'Intermediate Level': 'difficulty-intermediate',
-    'Advanced Level': 'difficulty-advanced',
-    'Expert Level': 'difficulty-expert',
-    'Legendary Level': 'difficulty-legendary',
-  }
-  return difficultyMap[difficulty || 'Intermediate Level'] || 'difficulty-intermediate'
-}
-
 // Listen for custom event to trigger hover
 onMounted(() => {
   if (cardElement.value) {
@@ -144,360 +92,211 @@ defineExpose({
 </script>
 
 <style scoped>
-/* Gaming-themed Project Card */
+/* Angled panel: ::before is the 1px frame, ::after the fill, both share the cut shape
+   so the card itself stays unclipped (focus rings on the links remain visible) */
 .game-project-card {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%);
-  border-radius: 12px;
-  border: 2px solid #d4af37;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+  --cut: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  --rarity: #8a919c;
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(5px);
+  transition: transform 0.15s ease-out;
+}
+
+/* Item-rarity edge keyed by project status */
+.game-project-card[data-status='Completed'] {
+  --rarity: #4fd17a;
+}
+.game-project-card[data-status='Open Source'] {
+  --rarity: #3d9bff;
+}
+.game-project-card[data-status='Released'] {
+  --rarity: #b57aff;
+}
+.game-project-card[data-status='Live'] {
+  --rarity: #ff6b1a;
+}
+.game-project-card[data-status='Current Build'] {
+  --rarity: #f5c542;
+}
+
+.game-project-card::before,
+.game-project-card::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: var(--cut);
+}
+
+.game-project-card::before {
+  inset: 0;
+  background: var(--m-line, #2a2e36);
+  transition: background-color 0.15s ease-out;
+}
+
+.game-project-card::after {
+  inset: 1px;
+  background:
+    linear-gradient(90deg, var(--rarity) 0 3px, transparent 3px),
+    radial-gradient(120% 55% at 0% 0%, color-mix(in srgb, var(--rarity) 16%, transparent), transparent 65%),
+    linear-gradient(180deg, #181b21, #101216);
 }
 
 .game-project-card:hover,
 .game-project-card.hero-hover {
-  transform: translateY(-5px) scale(1.005);
-  box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4);
-  border-color: #ffd700;
+  transform: translateY(-3px);
   z-index: 10;
-  background: linear-gradient(135deg, rgba(10, 10, 10, 0.98) 0%, rgba(25, 25, 25, 1) 100%);
 }
 
-/* Game Banner */
+.game-project-card:hover::before,
+.game-project-card.hero-hover::before {
+  background: var(--m-accent, #ff6b1a);
+}
+
+/* Badge row: quest type label left, rarity status chip right */
 .game-banner {
-  position: relative;
-  height: 70px;
-  overflow: hidden;
-  background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
-  flex-shrink: 0;
-}
-
-.game-banner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-  filter: brightness(0.8);
-}
-
-.game-project-card:hover .game-banner img,
-.game-project-card.hero-hover .game-banner img {
-  transform: scale(1.1);
-  filter: brightness(1);
-}
-
-.game-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 20, 0.6));
   display: flex;
   align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.game-project-card:hover .game-overlay,
-.game-project-card.hero-hover .game-overlay {
-  opacity: 1;
-}
-
-.game-actions {
-  display: flex;
-  gap: 1rem;
-  flex-direction: column;
-  align-items: center;
-}
-
-.play-button,
-.code-button {
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  padding: 12px 24px;
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
+  padding: 1rem 1.5rem 0 1.4rem;
 }
 
-.launch-button {
-  background: linear-gradient(45deg, #ff6b35, #ff8c42);
-  color: white;
-  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
-}
-
-.launch-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
-}
-
-.code-button {
-  background: linear-gradient(45deg, #4a90e2, #357abd);
-  color: white;
-  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
-}
-
-.code-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.6);
-}
-
-.launch-icon,
-.code-icon {
-  font-size: 1.1rem;
-}
-
-/* Status, Difficulty, and Quest Type Badges */
 .status-badge,
-.difficulty-badge,
 .quest-type-badge {
-  position: absolute;
-  padding: 3px 6px;
-  border-radius: 10px;
-  font-size: 0.55rem;
-  font-weight: bold;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  letter-spacing: 0.2px;
-  backdrop-filter: blur(10px);
-  border: 1px solid;
   white-space: nowrap;
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.quest-type-badge {
+  order: 1;
+  color: var(--m-dim, #8a919c);
 }
 
 .status-badge {
-  top: 15px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.8);
-  border-color: #d4af37;
-  color: #d4af37;
+  order: 2;
+  margin-left: auto;
+  padding: 0.3rem 0.55rem 0.3rem 0.75rem;
+  color: var(--rarity);
+  background: color-mix(in srgb, var(--rarity) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rarity) 55%, transparent);
 }
 
-.status-mission-complete {
-  background: rgba(76, 175, 80, 0.9);
-  border-color: #4caf50;
-  color: white;
-}
-
-.status-active-campaign {
-  background: rgba(255, 193, 7, 0.9);
-  border-color: #ffc107;
-  color: #333;
-}
-
-.status-current-build {
-  background: rgba(156, 39, 176, 0.9);
-  border-color: #9c27b0;
-  color: white;
-}
-
-.difficulty-badge {
-  top: 45px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.8);
-}
-
-.difficulty-beginner {
-  border-color: #4caf50;
-  color: #4caf50;
-}
-
-.difficulty-intermediate {
-  border-color: #2196f3;
-  color: #2196f3;
-}
-
-.difficulty-advanced {
-  border-color: #ff9800;
-  color: #ff9800;
-}
-
-.difficulty-expert {
-  border-color: #f44336;
-  color: #f44336;
-}
-
-.difficulty-legendary {
-  border-color: #9c27b0;
-  color: #9c27b0;
-  background: linear-gradient(45deg, rgba(156, 39, 176, 0.2), rgba(233, 30, 99, 0.2));
-}
-
-.quest-type-badge {
-  top: 15px;
-  left: 10px;
-  background: rgba(0, 0, 0, 0.8);
-  border-color: #61dafb;
-  color: #61dafb;
-}
-
-/* Game Info */
+/* Info */
 .game-info {
-  padding: 0.8rem;
-  background: linear-gradient(180deg, rgba(40, 40, 40, 0.3) 0%, rgba(20, 20, 20, 0.5) 100%);
+  padding: 0.8rem 1.5rem 1.25rem 1.4rem;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 .game-header {
-  margin-bottom: 0.6rem;
-  border-bottom: 2px solid rgba(212, 175, 55, 0.3);
-  padding-bottom: 0.6rem;
+  margin-bottom: 0.7rem;
 }
 
 .game-title {
-  color: #d4af37;
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin: 0 0 0.4rem 0;
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1.15rem;
+  line-height: 1.25;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--m-text, #f2f3f5);
+  margin: 0 0 0.3rem;
 }
 
 .game-genre {
-  color: #61dafb;
-  font-size: 0.9rem;
+  color: var(--m-accent, #ff6b1a);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 .game-description {
-  color: #ccc;
-  line-height: 1.3;
-  margin-bottom: 0.6rem;
-  font-size: 0.8rem;
+  color: var(--m-muted, #a7adb8);
+  line-height: 1.55;
+  margin-bottom: 0.9rem;
+  font-size: 0.88rem;
 }
 
-/* Tech Stack */
 .tech-stack {
-  margin-bottom: 0.6rem;
+  margin-top: auto;
 }
 
+/* Tiny label trailed by a hairline */
 .tech-label {
-  color: #d4af37;
-  font-size: 0.9rem;
-  font-weight: bold;
-  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--m-dim, #8a919c);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin-bottom: 0.55rem;
+}
+
+.tech-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--m-line, #2a2e36);
 }
 
 .tech-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .tech-tag {
-  padding: 6px 12px;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  border: 2px solid;
-  transition: all 0.3s ease;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
+  color: #d3d7de;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-.tech-tag:hover {
-  transform: scale(1.05);
+.project-links {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
 }
 
-/* Tech-specific colors */
-.tech-unity {
-  background: rgba(0, 0, 0, 0.8);
-  color: #ffffff;
-  border-color: #ffffff;
-}
-.tech-unreal {
-  background: rgba(0, 0, 0, 0.8);
-  color: #0e1128;
-  border-color: #0e1128;
-}
-.tech-godot {
-  background: rgba(71, 140, 224, 0.2);
-  color: #478ce0;
-  border-color: #478ce0;
-}
-.tech-vue {
-  background: rgba(79, 192, 141, 0.2);
-  color: #4fc08d;
-  border-color: #4fc08d;
-}
-.tech-react {
-  background: rgba(97, 218, 251, 0.2);
-  color: #61dafb;
-  border-color: #61dafb;
-}
-.tech-typescript {
-  background: rgba(49, 120, 198, 0.2);
-  color: #3178c6;
-  border-color: #3178c6;
-}
-.tech-csharp {
-  background: rgba(152, 104, 191, 0.2);
-  color: #9865bf;
-  border-color: #9865bf;
-}
-.tech-cpp {
-  background: rgba(0, 89, 156, 0.2);
-  color: #00599c;
-  border-color: #00599c;
-}
-.tech-threejs {
-  background: rgba(0, 0, 0, 0.8);
-  color: #ffffff;
-  border-color: #ffffff;
-}
-.tech-firebase {
-  background: rgba(255, 203, 5, 0.2);
-  color: #ffcb05;
-  border-color: #ffcb05;
-}
-.tech-default {
-  background: rgba(212, 175, 55, 0.2);
-  color: #d4af37;
-  border-color: #d4af37;
+/* Corner-cut buttons drawn with a gradient, not clip-path, so the focus ring is not clipped */
+.project-links a {
+  --btn: var(--m-accent, #ff6b1a);
+  padding: 0.6rem 1.1rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #0b0c0f;
+  background: linear-gradient(-45deg, transparent 8px, var(--btn) 8px);
+  transition: transform 0.15s ease-out;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .game-info {
-    padding: 0.8rem;
-  }
+.project-links a + a {
+  --btn: rgba(255, 255, 255, 0.1);
+  color: var(--m-text, #f2f3f5);
+}
 
-  .game-title {
-    font-size: 1rem;
-  }
+.project-links a:hover {
+  --btn: var(--m-accent-hi, #ff8c4a);
+  color: #0b0c0f;
+  transform: translateY(-1px);
+}
 
-  .game-actions {
-    flex-direction: row;
-    gap: 0.6rem;
-  }
-
-  .launch-button,
-  .code-button {
-    padding: 6px 12px;
-    font-size: 0.7rem;
-  }
-
-  .tech-label {
-    font-size: 0.7rem;
-  }
-
-  .tech-tag {
-    padding: 3px 6px;
-    font-size: 0.65rem;
-  }
+.project-links a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
 }
 </style>

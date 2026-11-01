@@ -37,17 +37,17 @@ export function useGameMechanics(currentLevel?: Ref<number>) {
     setThrowingCoffee(true)
     console.log('isThrowingCoffee after setting:', isThrowingCoffee.value)
 
-    // Small delay to ensure the UI updates before creating projectile
-    setTimeout(() => {
-      // Create coffee projectile flying straight horizontally in the facing direction
-      const newCoffee = {
-        position: { x: playerPosition.x + 35, y: playerPosition.y + 20 }, // Adjusted for larger character
-        velocity: { x: facingDirection === 'right' ? 8 : -8, y: 0 }, // Direction based on facing
-        rotation: 0
-      }
-
-      addCoffeeProjectile(newCoffee)
-    }, 50)
+    // One mug, or three in a row with the rapid_fire console cheat
+    const mugs = gameStore.rapidFire ? 3 : 1
+    for (let i = 0; i < mugs; i++) {
+      setTimeout(() => {
+        addCoffeeProjectile({
+          position: { x: playerPosition.x + 35, y: playerPosition.y + 20 },
+          velocity: { x: facingDirection === 'right' ? 8 : -8, y: 0 },
+          rotation: 0
+        })
+      }, 50 + i * 150)
+    }
 
     // Reset throwing state after animation - increased duration to see the animation
     setTimeout(() => {
@@ -171,17 +171,6 @@ export function useGameMechanics(currentLevel?: Ref<number>) {
         velocity: { x: newVelX, y: newVelY }
       })
     })
-
-    // Remove hit bugs after delay
-    if (bugEnemies.value && Array.isArray(bugEnemies.value)) {
-      bugEnemies.value.forEach(bug => {
-        if (bug.isHit) {
-          setTimeout(() => {
-            removeBugEnemy(bug.id)
-          }, 500)
-        }
-      })
-    }
   }
 
   // Improved collision detection with larger collision boxes and better positioning
@@ -194,21 +183,25 @@ export function useGameMechanics(currentLevel?: Ref<number>) {
     const coffeeSize = GAME_CONFIG.COFFEE_COLLISION_SIZE
     const bugSize = GAME_CONFIG.BUG_COLLISION_SIZE
 
-    const coffeeLeft = coffeeUpdate.newPosition.x
-    const coffeeRight = coffeeUpdate.newPosition.x + coffeeSize
-    const coffeeTop = coffeeUpdate.newPosition.y
-    const coffeeBottom = coffeeUpdate.newPosition.y + coffeeSize
-    const coffeeCenterX = coffeeUpdate.newPosition.x + coffeeSize / 2
-    const coffeeCenterY = coffeeUpdate.newPosition.y + coffeeSize / 2
+    // Collision boxes are centered on the visuals so the margin applies on every side
+    const coffeeOffset = (coffeeSize - GAME_CONFIG.COFFEE_SIZE) / 2
+    const bugOffset = (bugSize - GAME_CONFIG.BUG_SIZE) / 2
+
+    const coffeeLeft = coffeeUpdate.newPosition.x - coffeeOffset
+    const coffeeRight = coffeeLeft + coffeeSize
+    const coffeeTop = coffeeUpdate.newPosition.y - coffeeOffset
+    const coffeeBottom = coffeeTop + coffeeSize
+    const coffeeCenterX = coffeeLeft + coffeeSize / 2
+    const coffeeCenterY = coffeeTop + coffeeSize / 2
 
     for (const bug of bugs) {
       if (bug.isHit) continue
 
       // Use current bug position (they haven't moved yet in this frame)
-      const bugLeft = bug.position.x
-      const bugRight = bug.position.x + bugSize
-      const bugTop = bug.position.y
-      const bugBottom = bug.position.y + bugSize
+      const bugLeft = bug.position.x - bugOffset
+      const bugRight = bugLeft + bugSize
+      const bugTop = bug.position.y - bugOffset
+      const bugBottom = bugTop + bugSize
 
       // AABB collision detection with larger collision boxes
       const isColliding = (
@@ -229,6 +222,7 @@ export function useGameMechanics(currentLevel?: Ref<number>) {
 
         // Mark bug as hit using store action
         updateBugEnemy(bug.id, { isHit: true })
+        setTimeout(() => removeBugEnemy(bug.id), 500)
 
         // Add score
         const scoreToAdd = 10
@@ -237,7 +231,7 @@ export function useGameMechanics(currentLevel?: Ref<number>) {
         console.log('Current score after:', score.value)
 
         // Create splash effect at collision center
-        addCoffeeSplash({
+        const splashId = addCoffeeSplash({
           position: {
             x: coffeeCenterX - 20,
             y: coffeeCenterY - 20
@@ -245,15 +239,7 @@ export function useGameMechanics(currentLevel?: Ref<number>) {
         })
 
         // Auto-remove splash after animation
-        setTimeout(() => {
-          // Find and remove the splash (this is a simplified approach)
-          if (coffeeSplashes.value && coffeeSplashes.value.length > 0) {
-            const splashToRemove = coffeeSplashes.value[coffeeSplashes.value.length - 1]
-            if (splashToRemove) {
-              removeCoffeeSplash(splashToRemove.id)
-            }
-          }
-        }, 800)
+        setTimeout(() => removeCoffeeSplash(splashId), 800)
 
         return true // Collision detected, stop checking other bugs
       }

@@ -69,14 +69,14 @@ defineProps<{
   left: 50%;
   transform: translateX(-50%);
   font-size: 20px;
-  color: var(--white);
+  color: var(--text);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .door-text {
   margin-top: 5px;
   font-size: 12px;
-  color: var(--accent-color);
+  color: var(--accent);
   text-align: center;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);

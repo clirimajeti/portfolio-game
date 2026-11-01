@@ -13,7 +13,7 @@ export interface Project {
   title: string
   description: string
   tech: string[]
-  image: string
+  image?: string
   github?: string
   demo?: string
 }
@@ -25,18 +25,9 @@ export interface ContactFormData {
   message: string
 }
 
-export interface Particle {
-  id: number
-  x: number
-  y: number
-  delay: number
-  duration: number
-}
-
 export interface SocialLinks {
   linkedin: string
   github: string
-  twitter: string
 }
 
 export interface PortfolioData {

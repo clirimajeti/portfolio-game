@@ -1,13 +1,15 @@
 <template>
   <section class="game-section intro-section">
-    <Particles />
     <div class="intro-content">
-      <h1 class="intro-title">Clirim Ajeti</h1>
-      <p class="intro-subtitle">Full-Stack Developer & Game Creator</p>
+      <p class="intro-eyebrow">Player 1 - Hi, I'm</p>
+      <h1 class="intro-title">{{ PORTFOLIO_DATA.name }}</h1>
+      <p class="intro-subtitle">{{ PORTFOLIO_DATA.title }}</p>
+      <p class="intro-tagline">{{ PORTFOLIO_DATA.tagline }}</p>
       <div class="game-instructions" :class="{ 'hero-hover': isHeroHovering }" ref="instructionsElement">
-        <p>Welcome to my interactive portfolio!</p>
-        <p>Navigate through the levels to learn more about me.</p>
-        <p>Click the portal or press → to continue</p>
+        <p>This portfolio is a small game.</p>
+        <p>Move with the arrow keys and press Space to throw coffee.</p>
+        <p>Squash every bug to open the portal to the next level.</p>
+        <span class="dialog-cursor" aria-hidden="true" />
       </div>
     </div>
     <div class="portal" :class="{ 'portal-active': isPortalActive }" />
@@ -16,7 +18,7 @@
 
 <script setup lang="ts">
 import { inject, ref, onMounted } from 'vue'
-import Particles from '../Particles.vue'
+import { PORTFOLIO_DATA } from '../../constants'
 
 const emit = defineEmits<{
   next: []
@@ -53,103 +55,102 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-}
-
-.intro-section {
-  background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%);
 }
 
 .intro-content {
   text-align: center;
   z-index: 2;
-  max-width: 800px;
+  max-width: 760px;
   padding: 0 20px;
 }
 
+.intro-eyebrow {
+  color: var(--cyan);
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
 .intro-title {
-  font-size: 4rem;
-  color: var(--accent-color);
-  text-shadow: 0 0 20px var(--accent-color);
-  margin-bottom: 1rem;
-  animation: glow 2s ease-in-out infinite alternate;
+  font-size: clamp(1.6rem, 6vw, 3.5rem);
+  color: var(--yellow);
+  text-shadow:
+    4px 4px 0 var(--magenta),
+    8px 8px 0 var(--ink);
+  margin-bottom: 1.5rem;
 }
 
 .intro-subtitle {
-  font-size: 1.5rem;
-  color: var(--text-light);
-  margin-bottom: 2rem;
+  font-family: var(--font-pixel);
+  font-size: clamp(0.8rem, 2.2vw, 1.1rem);
+  color: var(--text);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
 }
 
+.intro-tagline {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+}
+
+/* RPG dialog box */
 .game-instructions {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 20px;
-  border-radius: 10px;
-  border: 2px solid var(--accent-color);
-  margin-bottom: 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  background: var(--surface);
+  box-shadow: var(--panel-shadow);
+  padding: 1.25rem 1.5rem 1.5rem;
+  text-align: left;
+  transition:
+    transform 0.12s steps(2),
+    box-shadow 0.12s steps(2);
 }
 
 .game-instructions:hover,
 .game-instructions.hero-hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--panel-shadow-hover);
 }
 
 .game-instructions p {
-  margin-bottom: 10px;
-  color: var(--white);
+  color: var(--text-muted);
 }
 
-.portal {
+.game-instructions p + p {
+  margin-top: 0.4rem;
+}
+
+.game-instructions p:first-child {
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--yellow);
+  margin-bottom: 0.9rem;
+}
+
+/* The one blinking element: classic "more text" arrow */
+.dialog-cursor {
   position: absolute;
-  bottom: 50px;
-  right: 100px;
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
-  border-radius: 50%;
-  cursor: pointer;
-  animation: pulse 2s infinite;
-  transition: transform 0.3s ease;
+  right: 14px;
+  bottom: 10px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--yellow);
+  animation: blink 1.2s steps(1) infinite;
 }
 
-.portal:hover {
-  transform: scale(1.2);
-}
-
-.portal-active {
-  background: radial-gradient(circle, var(--success-color) 0%, transparent 70%) !important;
-  box-shadow: 0 0 20px var(--success-color);
-  animation: activePortalPulse 1s infinite;
-}
-
-@keyframes activePortalPulse {
-  0% { 
-    opacity: 0.8; 
-    transform: scale(1);
-    box-shadow: 0 0 20px var(--success-color);
-  }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.1);
-    box-shadow: 0 0 30px var(--success-color);
-  }
-  100% { 
-    opacity: 0.8; 
-    transform: scale(1);
-    box-shadow: 0 0 20px var(--success-color);
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
 }
 
-@keyframes glow {
-  0% { text-shadow: 0 0 20px var(--accent-color); }
-  100% { text-shadow: 0 0 30px var(--accent-color), 0 0 40px var(--accent-color); }
-}
-
-@keyframes pulse {
-  0% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-  100% { opacity: 0.6; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) {
+  .dialog-cursor {
+    animation: none;
+  }
 }
 </style>

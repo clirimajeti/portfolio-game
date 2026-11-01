@@ -94,15 +94,14 @@ const handleSubmit = async () => {
 
 <style scoped>
 .contact-form {
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--surface);
   padding: 2rem;
-  border-radius: 10px;
-  border: 2px solid var(--accent-color);
+  box-shadow: var(--panel-shadow);
 }
 
 .form-title {
-  color: var(--accent-color);
-  font-size: 1.5rem;
+  color: var(--yellow);
+  font-size: 0.9rem;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -113,57 +112,61 @@ const handleSubmit = async () => {
 
 .form-group label {
   display: block;
-  color: var(--text-light);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  color: var(--text-muted);
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
   padding: 0.8rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid transparent;
-  border-radius: 5px;
-  color: var(--white);
-  font-family: var(--pixel-font);
+  background: var(--ink);
+  border: 3px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
   font-size: 1rem;
-  transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--accent-color);
-  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--yellow);
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--text-light);
+  color: var(--text-muted);
 }
 
 .submit-button {
   width: 100%;
   padding: 1rem;
-  background: var(--accent-color);
-  color: var(--primary-color);
+  background: var(--yellow);
+  color: var(--ink);
   border: none;
-  border-radius: 5px;
-  font-family: var(--pixel-font);
-  font-size: 1rem;
-  font-weight: bold;
+  box-shadow:
+    0 0 0 var(--px) var(--ink),
+    6px 6px 0 var(--px) var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .submit-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+  transform: translate(-2px, -2px);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--px) var(--ink);
 }
 
 .submit-button:disabled {

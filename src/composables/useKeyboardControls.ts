@@ -17,7 +17,14 @@ export function useKeyboardControls(
   const keysPressed = ref(new Set<string>())
   const collidedCards = ref(new Set<HTMLElement>())
 
+  // Typing in a field (e.g. the console) or toggling the console must not drive the character
+  const isIgnored = (event: KeyboardEvent) => {
+    const target = event.target as HTMLElement | null
+    return event.code === 'Backquote' || !!target?.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"])')
+  }
+
   const handleKeyDown = (event: KeyboardEvent) => {
+    if (isIgnored(event)) return
     const wasEmpty = keysPressed.value.size === 0
     keysPressed.value.add(event.key)
     
@@ -37,6 +44,7 @@ export function useKeyboardControls(
     }
   }
 
+  // keyup is never ignored: releasing a key held before focusing a field must still stop movement
   const handleKeyUp = (event: KeyboardEvent) => {
     keysPressed.value.delete(event.key)
     
