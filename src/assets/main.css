@@ -1,0 +1,186 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Retro palette: ink navy base, three arcade accents used sparingly */
+  --bg: #0e0d24;
+  --bg-grid: #15143a;
+  --surface: #1c1b45;
+  --surface-hover: #262563;
+  --ink: #05040f;
+  --border: #3d3b86;
+  --border-strong: #f4f1ff;
+  --text: #f4f1ff;
+  --text-muted: #bcb8e6;
+  --yellow: #ffd23f;
+  --cyan: #3de6ff;
+  --magenta: #ff4f9a;
+  --accent: var(--yellow);
+
+  /* Pixel shapes: hard edges, stepped borders, crisp offset shadows */
+  --px: 4px;
+  --panel-frame: 0 0 0 var(--px) var(--ink), 0 0 0 calc(var(--px) * 2) var(--border);
+  --panel-shadow: var(--panel-frame), calc(var(--px) * 3) calc(var(--px) * 3) 0 0 var(--ink);
+  --panel-shadow-hover:
+    0 0 0 var(--px) var(--ink), 0 0 0 calc(var(--px) * 2) var(--yellow),
+    calc(var(--px) * 3) calc(var(--px) * 3) 0 0 var(--ink);
+
+  /* Type */
+  --font-pixel: 'Press Start 2P', 'Courier New', ui-monospace, monospace;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+body {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  /* Static pixel grid, deliberately not animated */
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--bg-grid) 2px, transparent 2px),
+    linear-gradient(90deg, var(--bg-grid) 2px, transparent 2px);
+  background-size: 32px 32px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+/* Shared level title: "STAGE 2" kicker above a pixel heading */
+.level-title {
+  font-size: clamp(1.25rem, 3.2vw, 2rem);
+  color: var(--text);
+  text-align: center;
+  text-shadow: 4px 4px 0 var(--ink);
+}
+
+.level-title::before {
+  content: attr(data-stage);
+  display: block;
+  font-size: 0.7rem;
+  color: var(--cyan);
+  margin-bottom: 0.9rem;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+/* Crisp pixel sprites (sizes and frames live in the scoped game components) */
+.character,
+.bug-enemy,
+.coffee-projectile,
+.coffee-splash {
+  image-rendering: pixelated;
+}
+
+/* Portal: a pixel gate. Geometry (bottom 50, right 100, 80x80) is mirrored in useGameMechanics. */
+.portal {
+  position: absolute;
+  bottom: 50px;
+  right: 100px;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  z-index: 10;
+  background:
+    linear-gradient(var(--ink), var(--ink)) center / 40px 40px no-repeat,
+    linear-gradient(var(--surface-hover), var(--surface-hover)) center / 56px 56px no-repeat,
+    var(--border);
+  box-shadow:
+    0 0 0 4px var(--ink),
+    8px 8px 0 0 var(--ink);
+  image-rendering: pixelated;
+}
+
+.portal::before {
+  content: '';
+  position: absolute;
+  inset: 32px;
+  background: var(--text-muted);
+}
+
+.portal-active {
+  background:
+    linear-gradient(var(--cyan), var(--cyan)) center / 40px 40px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) center / 56px 56px no-repeat,
+    var(--cyan);
+}
+
+.portal-active::before {
+  inset: 28px;
+  background: var(--text);
+}
+
+.portal::after {
+  content: 'EXIT';
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.portal-active::after {
+  color: var(--cyan);
+}
+
+/* Pixel scrollbar for every scroll area: square yellow thumb on an ink track */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ink);
+  border: 2px solid var(--border);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--yellow);
+  border: 3px solid var(--ink);
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.35);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--ink);
+}
+
+/* Firefox has no scrollbar pseudo-elements; Chrome ignores them once these are set */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: var(--yellow) var(--ink);
+  }
+}
