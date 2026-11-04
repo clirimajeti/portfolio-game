@@ -18,6 +18,7 @@ Walk through five levels (Intro, About, Skills, Projects, Contact), throw coffee
 |---|---|
 | Arrow keys | Move |
 | Space | Throw coffee |
+| ~ | Open the console |
 
 ## Built with
 
