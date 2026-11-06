@@ -499,11 +499,11 @@ export const SKILLS_DATA = {
 export const PROJECTS_DATA = [
   {
     id: 1,
-    title: 'ESLint Pattern Rules',
+    title: 'codemyrules',
     description:
-      'An open-source agent skill that turns a codebase\'s own conventions into custom ESLint rules, each with RuleTester tests. It finds the patterns a team mostly follows, asks which to enforce, and makes the majority pattern the only pattern.',
-    tech: ['Agent Skill', 'ESLint', 'RuleTester', 'TypeScript'],
-    github: 'https://github.com/clirimajeti/eslint-pattern-rules',
+      'An open-source agent skill that turns a project\'s decisions, coding patterns and agent-doc instructions into lint rules across its whole stack: ESLint for JS/TS/Vue/Svelte, ast-grep for Java, Kotlin, Python, Go and more. It slims the CLAUDE.md / AGENTS.md lines those rules now cover and sets up a silent lint feedback loop for Claude Code.',
+    tech: ['Agent Skill', 'ESLint', 'ast-grep', 'Claude Code Hooks'],
+    github: 'https://github.com/clirimajeti/codemyrules',
     category: 'Developer Tooling',
     status: 'Open Source',
     questType: 'Main Quest',
